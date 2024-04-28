@@ -1,7 +1,12 @@
 import os
+import sys
+
+# Redirect stdout to stderr
+sys.stdout = sys.stderr
+
+# Now import TensorFlow and the rest of the libraries
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import tensorflow as tf
-
 import streamlit as st
 import cv2
 import numpy as np
