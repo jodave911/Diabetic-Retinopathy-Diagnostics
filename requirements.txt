@@ -3,3 +3,4 @@ streamlit==1.31.1
 tensorflow==2.16.1
 opencv-python
 scikit-learn==1.4.2
+st-pages
