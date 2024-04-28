@@ -20,16 +20,27 @@ def preprocess_image(img):
     return img
 
 @st.cache_data()
+
 def predict_class(img):
+    # Suppress Keras' printing behavior
+    tf.get_logger().setLevel('ERROR')
+
+    # Preprocess the image
     image_arr = preprocess_image(img)
+
+    # Make predictions
     prediction = DR_model.predict(np.array([image_arr]))
+
+    # Post-process predictions
     predicted = np.argmax(prediction, axis=1)
     confidence = np.max(prediction) * 100
+
+    # Return the predicted class and confidence
     if predicted == 1:
         return 'DR', confidence
     else:
         return 'NO_DR', confidence
-
+        
 def main():
     st.set_page_config(page_title="Diabetic Retinopathy Diagnostics")
     st.title("Diabetic Retinopathy Classification")
