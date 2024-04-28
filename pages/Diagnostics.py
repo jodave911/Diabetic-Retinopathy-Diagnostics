@@ -1,35 +1,42 @@
 import os
 import sys
+from contextlib import contextmanager
 
-# Redirect stdout to stderr
-sys.stdout = sys.stderr
-
-# Now import TensorFlow and the rest of the libraries
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import tensorflow as tf
 import streamlit as st
 import cv2
 import numpy as np
 
+# Define context manager to suppress stdout
+@contextmanager
+def suppress_stdout():
+    with open(os.devnull, 'w') as devnull:
+        old_stdout = sys.stdout
+        sys.stdout = devnull
+        try:
+            yield
+        finally:
+            sys.stdout = old_stdout
+
+# Load the Keras model
 DR_model = tf.keras.models.load_model("DR_CNN_Model.keras")
 
+# Preprocess image function
 def preprocess_image(img):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = cv2.resize(img, (224, 224))
     img = np.array(img) / 255.0
     return img
 
-@st.cache_data()
-
+# Function to predict class
 def predict_class(img):
-    # Suppress Keras' printing behavior
-    tf.get_logger().setLevel('ERROR')
+    # Suppress printing during model prediction
+    with suppress_stdout():
+        # Preprocess the image
+        image_arr = preprocess_image(img)
 
-    # Preprocess the image
-    image_arr = preprocess_image(img)
-
-    # Make predictions
-    prediction = DR_model.predict(np.array([image_arr]))
+        # Make predictions
+        prediction = DR_model.predict(np.array([image_arr]))
 
     # Post-process predictions
     predicted = np.argmax(prediction, axis=1)
@@ -40,7 +47,8 @@ def predict_class(img):
         return 'DR', confidence
     else:
         return 'NO_DR', confidence
-        
+
+# Main function
 def main():
     st.set_page_config(page_title="Diabetic Retinopathy Diagnostics")
     st.title("Diabetic Retinopathy Classification")
