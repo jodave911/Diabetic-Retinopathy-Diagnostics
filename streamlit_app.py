@@ -7,8 +7,6 @@ st.set_page_config(
 
 st.write("# Diabetic Retinopathy Diagnosis 👁️")
 
-st.sidebar.success("Select a demo above.")
-
 st.markdown(
     """
     Our aim is to develop a hybrid image enhancement algorithm using deep learning for accurate diabetic retinopathy diagnosis from fundus images.
