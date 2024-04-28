@@ -1,5 +1,5 @@
 numpy==1.24.3
 streamlit==1.31.1
 tensorflow==2.16.1
-opencv-python-headless==4.5.1.48
+opencv-python
 scikit-learn==1.4.2
